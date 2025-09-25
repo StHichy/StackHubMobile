@@ -77,9 +77,10 @@ export default function Home({ navigation }) {
           <Ionicons name="home" size={30} color="#fff" />
         </Pressable>
         
-        <Pressable style={styles.navItem}>
-          <Ionicons name="search" size={30} color="#fff" />
-        </Pressable>
+        <Pressable style={styles.navItem} onPress={() => navigation.navigate('ModalList')}>
+  <Ionicons name="search" size={30} color="#fff" />
+</Pressable>
+
         
         <Pressable style={[styles.navItem, styles.activeNavItem]}>
           <View style={styles.activeNavIconContainer}>
