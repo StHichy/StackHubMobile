@@ -44,7 +44,7 @@ export default function Home({ navigation }) {
               
               <TouchableOpacity
                 style={styles.mainButton} 
-                onPress={() => navigation.navigate('Cadastro')}
+                onPress={() => navigation.navigate('CategorySelection')}
               >
                 <Text style={styles.mainButtonText}>FINALIZAR CADASTRO!</Text>
               </TouchableOpacity>
