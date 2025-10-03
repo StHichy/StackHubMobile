@@ -10,6 +10,8 @@ import CategorySelection from './pages/CategorySelection';
 import EmpCadastro from './pages/EmpCadastro';
 import DevCadastro from './pages/DevCadastro';
 import SwapScreen from './pages/SwapScreen';
+import EditProfileScreen from './pages/EditProfileScreen';
+import ChatListScreen from './pages/ChatListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -106,6 +108,28 @@ export default function App() {
           options={{  
             headerShown: false,
             title: "Descubra Desenvolvedores",
+            headerStyle: { backgroundColor: '#0a3d1d' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontFamily: 'HankenGrotesk-SemiBold' }
+          }}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfileScreen}
+          options={{
+            headerShown: false,
+            title: "Editar Perfil",
+            headerStyle: { backgroundColor: '#0a3d1d' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontFamily: 'HankenGrotesk-SemiBold' }
+          }}
+        />
+        <Stack.Screen
+          name="ChatList"
+          component={ChatListScreen}
+          options={{
+            headerShown: false,
+            title: "Mensagens",
             headerStyle: { backgroundColor: '#0a3d1d' },
             headerTintColor: '#fff',
             headerTitleStyle: { fontFamily: 'HankenGrotesk-SemiBold' }

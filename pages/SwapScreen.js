@@ -12,7 +12,11 @@ import {
 } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Dropdown } from "react-native-element-dropdown";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -71,6 +75,7 @@ const profiles = [
 ];
 
 export default function App() {
+  const navigation = useNavigation();
   const [profileIndex, setProfileIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const translateX = useRef(new Animated.Value(0)).current;
@@ -92,7 +97,6 @@ export default function App() {
 
   const handleGestureEnd = ({ nativeEvent }) => {
     const { translationX, translationY } = nativeEvent;
-
     if(translationX > 120) animateSwipe('right');
     else if(translationX < -120) animateSwipe('left');
     else if(translationY < -120) animateSwipe('up');
@@ -122,6 +126,22 @@ export default function App() {
   const nopeOpacity = translateX.interpolate({ inputRange: [-150, 0], outputRange: [1, 0], extrapolate: 'clamp' });
   const superOpacity = translateY.interpolate({ inputRange: [-150, 0], outputRange: [1, 0], extrapolate: 'clamp' });
 
+  const handleDropdownChange = async (item) => {
+    if(item.value === 'perfil') {
+      navigation.navigate('EditProfile');
+    } else if(item.value === 'logout') {
+      try {
+        await AsyncStorage.removeItem('token'); // Remove token
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+      } catch (err) {
+        console.log('Erro ao fazer logout', err);
+      }
+    }
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <LinearGradient
@@ -133,24 +153,19 @@ export default function App() {
           <PanGestureHandler onGestureEvent={onGestureEvent} onEnded={handleGestureEnd}>
             <Animated.View style={[styles.card, { transform: [{ translateX }, { translateY }] }]}>
               <Image source={currentProfile.img} style={styles.cardImage} />
-              
               <LinearGradient
                 colors={['transparent', 'rgba(0,0,0,0.8)']}
                 style={styles.imageOverlay}
               />
-              
-              {/* Botão de + no canto superior direito */}
               <Pressable 
                 style={styles.plusButton}
                 onPress={() => setModalVisible(true)}
               >
                 <Ionicons name="add-circle" size={32} color="#fff" />
               </Pressable>
-              
               <View style={styles.cardInfo}>
                 <Text style={styles.name}>{currentProfile.name}</Text>
                 <Text style={styles.job}>{currentProfile.job}</Text>
-                
                 <View style={styles.skillsContainer}>
                   {currentProfile.skills.map((skill, idx) => (
                     <View key={idx} style={styles.skillBubble}>
@@ -158,7 +173,6 @@ export default function App() {
                     </View>
                   ))}
                 </View>
-                
                 <View style={styles.reviewsContainer}>
                   <Text style={styles.reviews}>{currentProfile.reviews} avaliações</Text>
                   <View style={styles.ratingContainer}>
@@ -167,7 +181,6 @@ export default function App() {
                   </View>
                 </View>
               </View>
-
               <Animated.Text style={[styles.actionLabel, styles.likeLabel, { opacity: likeOpacity }]}>LIKE</Animated.Text>
               <Animated.Text style={[styles.actionLabel, styles.nopeLabel, { opacity: nopeOpacity }]}>NOPE</Animated.Text>
               <Animated.Text style={[styles.actionLabel, styles.superLabel, { opacity: superOpacity }]}>SUPER LIKE</Animated.Text>
@@ -187,7 +200,6 @@ export default function App() {
           </View>
         </View>
 
-        {/* Modal do Portfólio */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -205,18 +217,15 @@ export default function App() {
                   <Ionicons name="close" size={24} color="#fff" />
                 </Pressable>
               </View>
-
               <ScrollView style={styles.modalBody}>
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Experiência</Text>
                   <Text style={styles.sectionText}>{currentProfile.portfolio.experience}</Text>
                 </View>
-
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Formação</Text>
                   <Text style={styles.sectionText}>{currentProfile.portfolio.education}</Text>
                 </View>
-
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Tecnologias</Text>
                   <View style={styles.techContainer}>
@@ -227,7 +236,6 @@ export default function App() {
                     ))}
                   </View>
                 </View>
-
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Projetos</Text>
                   {currentProfile.portfolio.projects.map((project, index) => (
@@ -244,10 +252,10 @@ export default function App() {
 
         <View style={styles.navBar}>
           <Pressable style={styles.navItem}>
-            <Ionicons name="home" size={28} color="#fff" />
+            <Ionicons name="folder" size={28} color="#fff" />
           </Pressable>
           <Pressable style={styles.navItem}>
-            <Ionicons name="search" size={28} color="#fff" />
+            <FontAwesome5 name="clipboard-list" size={28} color="#fff" />
           </Pressable>
           <Pressable style={[styles.navItem, styles.activeNavItem]}>
             <View style={styles.activeNavIconContainer}>
@@ -258,19 +266,66 @@ export default function App() {
               />
             </View>
           </Pressable>
-          <Pressable style={styles.navItem}>
-            <MaterialCommunityIcons name="shopping" size={28} color="#fff" />
-          </Pressable>
-          <Pressable style={styles.navItem}>
-            <Ionicons name="menu" size={28} color="#fff" />
-          </Pressable>
+          <Pressable 
+    style={styles.navItem}
+    onPress={() => navigation.navigate('ChatList')} // <-- Use o nome da rota de chat que você definiu
+  >
+    <MaterialCommunityIcons name="chat" size={28} color="#fff" />
+  </Pressable>
+
+          <Dropdown
+            style={[styles.dropdownNav]}
+            containerStyle={styles.dropdownContainer}
+            placeholderStyle={styles.dropdownPlaceholder}
+            selectedTextStyle={styles.dropdownSelected}
+            itemTextStyle={styles.dropdownItemText}
+            activeColor="#1a1a1a"
+            data={[
+              { label: "Perfil", value: "perfil" },
+              { label: "Sair", value: "logout" },
+            ]}
+            labelField="label"
+            valueField="value"
+            placeholder={<Ionicons name="menu" size={26} color="#fff" />}
+            onChange={handleDropdownChange}
+          />
         </View>
       </LinearGradient>
     </GestureHandlerRootView>
   );
 }
 
+// Mantenha todo o seu styles abaixo (como estava no seu código anterior)
 const styles = StyleSheet.create({
+  dropdownNav: {
+    width: 83,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dropdownContainer: {
+    backgroundColor: "#2d2d2d",
+    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  dropdownPlaceholder: {
+    color: "#fff",
+    textAlign: "center",
+  },
+  dropdownSelected: {
+    color: "#0f0",
+    fontSize: 14,
+    textAlign: "center",
+  },
+  dropdownItemText: {
+    color: "#fff",
+    fontSize: 16,
+    paddingVertical: 8,
+  },
+
   card: {
     width: width * 0.9,
     height: height * 0.5,
@@ -297,7 +352,7 @@ const styles = StyleSheet.create({
     right: 0,
     height: '50%',
   },
-  // Botão de + no canto superior direito
+
   plusButton: {
     position: 'absolute',
     top: 15,
