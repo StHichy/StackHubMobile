@@ -33,7 +33,7 @@ export default function CadastroEmpresa({ navigation }) {
     bio: "",
   });
 
-  const API_URL = "http://192.168.56.1:8000/api";
+  const API_URL = "http://192.168.0.113:8000/api";
 
   // --- Busca dados do usuário logado
   useEffect(() => {
@@ -176,6 +176,9 @@ const handleCadastrar = async () => {
     setLoading(false);
   }
 };
+
+
+
 
 
 

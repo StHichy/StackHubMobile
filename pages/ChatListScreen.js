@@ -24,26 +24,29 @@ const dropdownData = [
 
 // Dados Fictícios para a Lista de Mensagens
 const chatData = [
-  { id: '1', name: 'Pedro Chucas Pinheiro Soares', message: 'Projeto finalizado!', time: '9:30 - 25/09/2025', isNew: false, color: '#90EE90' },
-  { id: '2', name: 'Miguel Pata Choca Abrame', message: 'Iniciamos a Sprint final.', time: '13:00 - 11/09/2025', isNew: true, color: '#00ff00' },
   { id: '3', name: 'Cauan Fonseca Prestes', message: 'Front? Joga nas costas do pai...', time: '20:50 - 08/09/2025', isNew: false, color: '#00ff00' },
   { id: '4', name: 'Carlos Henrique Ferreira', message: 'Fui expulso do prjt, 6 chapam...', time: '09:41 - 04/07/2025', isNew: false, color: '#90EE90' },
-  { id: '5', name: 'Vinicius Tardellafilas Leitada', message: 'Me chamaram de carequilson :(', time: '00:59 - 28/08/2025', isNew: true, color: '#00ff00' },
   { id: '6', name: 'Daniel Lopes dos Anjos', message: 'Feeeeeeeeeraaa demais!!', time: '13:39 - 19/08/2025', isNew: false, color: '#00ff00' },
-  { id: '7', name: 'Negrilson Estruoilson', message: 'Me chame de Bahanilson...', time: '17:45 - 12/08/2025', isNew: false, color: '#00ff00' },
 ];
 
 const ChatListScreen = ({ navigation }) => {
   const [dropdownValue, setDropdownValue] = React.useState(null);
 
   // Função fictícia para a ação do dropdown da navbar
-  const handleDropdownChange = (item) => {
-    setDropdownValue(item.value);
+ const handleDropdownChange = async (item) => {
     if(item.value === 'perfil') {
-        // Exemplo de navegação:
-        // navigation.navigate('EditProfile');
+      navigation.navigate('EditProfile');
+    } else if(item.value === 'logout') {
+      try {
+        await AsyncStorage.removeItem('token'); // Remove token
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+      } catch (err) {
+        console.log('Erro ao fazer logout', err);
+      }
     }
-    console.log("Ação do menu:", item.value);
   };
   
   // Função fictícia para lidar com o clique na conversa
@@ -120,8 +123,9 @@ const ChatListScreen = ({ navigation }) => {
           <Pressable style={styles.navItem}>
             <FontAwesome5 name="clipboard-list" size={28} color="#fff" />
           </Pressable>
-          <Pressable style={[styles.navItem, styles.activeNavItem]}>
+          <Pressable onPress={() => navigation.navigate('Swap')} style={[styles.navItem, styles.activeNavItem]}>
             <View>
+              
               <Image 
                 source={require('../assets/logo.png')} 
                 style={styles.navIconImage}

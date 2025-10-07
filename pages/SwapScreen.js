@@ -580,7 +580,7 @@ const styles = StyleSheet.create({
   activeNavItem: { 
     alignItems: 'center', 
     justifyContent: 'center',
-    marginBottom: 15,
+    marginBottom: 50,
   },
   activeNavIconContainer: { 
     width: 60, 

@@ -43,7 +43,7 @@ export default function CadastroDev({ navigation }) {
   ]);
   const [selectedTags, setSelectedTags] = useState([]);
 
-  const API_URL = "http://192.168.56.1:8000/api";
+  const API_URL = "http://192.168.0.113:8000/api";
 
   useEffect(() => {
     const fetchUserData = async () => {

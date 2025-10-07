@@ -21,7 +21,7 @@ export default function RegisterScreen({ navigation }) {
   const [alertType, setAlertType] = useState("success"); // 'success', 'error', 'warning'
   const [scaleAnim] = useState(new Animated.Value(0));
 
-  const API_URL = "http://192.168.56.1:8000/api";
+  const API_URL = "http://192.168.0.113:8000/api";
 
   const alertIcons = {
     success: require("../assets/sucess.png"),
